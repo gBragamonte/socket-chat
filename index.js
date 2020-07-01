@@ -33,7 +33,7 @@ server.listen(port, () => {
     io.emit('guests.show', users);
     // Send messages history
     io.emit('messages.show', messages);
-    // Storage current user to calculate online users
+    // Storage current user
     var storageUser;
     //  
     socket.on('guest.new', user => {
