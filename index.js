@@ -25,6 +25,7 @@ server.listen(port, () => {
   console.log('Listening on '+port)
 
   const users = [];
+  const onlineUsers = [];
   const messages = [];
 
   io.on("connection", (socket) => {
@@ -39,20 +40,22 @@ server.listen(port, () => {
     socket.on('guest.new', user => {
       io.emit('guest.show', user);
       users.push(user);
+      onlineUsers.push(user);
       storageUser = user;
     });
     // 
     socket.on('message.new', message => {
-      io.emit('message.show', message);
-      messages.push(message);
+      const subject = { ...message, date: new Date() };
+      io.emit('message.show', subject);
+      messages.push(subject);
     });
     // 
     socket.on('disconnect', () => {
       console.log('Client disconnected:', { storageUser });
       // Remove user from list
       if (!storageUser) return;
-      const userIndex = users.findIndex(el => el.name === storageUser.name);
-      if (userIndex > -1) users.splice(userIndex, 1);
+      const userIndex = onlineUsers.findIndex(el => el.name === storageUser.name);
+      if (userIndex > -1) onlineUsers.splice(userIndex, 1);
     });
   });
 
