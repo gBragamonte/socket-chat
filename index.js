@@ -36,20 +36,20 @@ server.listen(port, () => {
     io.emit('messages.show', messages);
     // Storage current user
     var storageUser;
-    //  
+
     socket.on('guest.new', user => {
       io.emit('guest.show', user);
       users.push(user);
       onlineUsers.push(user);
       storageUser = user;
     });
-    // 
+
     socket.on('message.new', message => {
       const subject = { ...message, date: new Date() };
       io.emit('message.show', subject);
       messages.push(subject);
     });
-    // 
+
     socket.on('disconnect', () => {
       console.log('Client disconnected:', { storageUser });
       // Remove user from list
